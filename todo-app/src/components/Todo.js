@@ -1,18 +1,48 @@
-import React, { Component } from 'react';
+import React, {useState } from 'react';
 
-class Todo extends Component{
-    render(){
-        const {todo} = this.props;
+const Todo = (props) => {
+        const {todo,todoEditingId,getTodoEditingId,onEditTodo,index,markCompleted,removeTodo} = props;
+        const [text,setText] = useState(todo.text);
+        const isEditing = todoEditingId === todo.id;
+        const editTodo = () => {
+            onEditTodo({
+                ...todo,
+                text
+            },index)
+        }
+
         return(
-            <li>
-                <div className="view">
-                    <input type="checkbox" className="toggle" checked = {todo.isCompleted}/>
-                    <label>{todo.text}</label>
-                    <button className="destroy"></button>
-                </div>
+            <li className={`${isEditing ? 'editing' : ''}
+                            ${todo.isCompleted ? 'completed' : ''}`}>   
+                {
+                    !isEditing ?
+                        <div className="view">
+                            <input 
+                                type="checkbox" 
+                                className="toggle" 
+                                checked = {todo.isCompleted}
+                                onChange= {()=>markCompleted(todo.id)}
+                            />
+                            <label onDoubleClick={()=> getTodoEditingId(todo.id)}>{todo.text}</label>
+                            <button className="destroy" onClick={()=>removeTodo(todo.id)}></button>
+                        </div>:
+                        <input 
+                            type="text" 
+                            className="edit"
+                            value={text}
+                            onChange={(event)=>{setText(event.target.value)}} 
+                            onBlur={editTodo}
+                            onKeyPress={(e) => {
+                                if(e.key === 'Enter'){
+                                    editTodo()
+                                }
+                            }}
+                        />
+                
+                }
             </li>
         )
-    }
+    
 }
 
 export default Todo;

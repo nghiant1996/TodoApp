@@ -2,42 +2,46 @@ import React, { Component } from 'react';
 
 class Footer extends Component {
     render(){
+        const {status, setStatusFilter, clearCompleted, numOfTodos, numOfTodosLeft} = this.props;
         const filterBtns = [
             {
                 title: 'All',
-                isActived: true,
-                onClick: ()=> {},
+                isActived: status === 'ALL',
+                onClick: ()=> setStatusFilter('ALL'),
                 link: ''
             },
             {
                 title: 'Active',
-                isActived: false,
-                onClick: ()=> {},
+                isActived: status === 'ACTIVE',
+                onClick: ()=> setStatusFilter('ACTIVE'),
                 link: ''
             },
             {
                 title: 'Completed',
-                isActived: false,
-                onClick: ()=> {},
+                isActived: status === 'COMPLETED',
+                onClick: ()=> setStatusFilter('COMPLETED'),
                 link: ''
             }
         ]
         return(
             <footer className="footer">
                 <span className="todo-count">
-                    <strong>1</strong>
+                    <strong>{numOfTodosLeft}</strong>
                     <span> </span>
-                    <span>item  </span>
+                    <span>{`${numOfTodosLeft > 1 ? 'items' : 'item'}`}</span>
                     <span> left</span>
                 </span>
                 <ul className="filters">
                     {
                         filterBtns.map(btn => (
-                            <FilterBtn {...btn}/>
+                            <FilterBtn key={`btn${btn.title}`} {...btn}/>
                         ))
                     }
                 </ul>
-                <button className="clear-completed">Clear completed</button>
+                {(numOfTodos > numOfTodosLeft) && <button 
+                                                        className="clear-completed"
+                                                        onClick={clearCompleted}
+                                                  >Clear completed</button>}
             </footer>
         )
     }
